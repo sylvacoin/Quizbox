@@ -19,7 +19,7 @@ class CreateQuizOptionsTable extends Migration
             $table->string('option_key');
             $table->string('option_value');
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
     }
 

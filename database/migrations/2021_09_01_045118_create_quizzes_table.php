@@ -21,7 +21,7 @@ class CreateQuizzesTable extends Migration
             $table->string('answer');
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
     }
 

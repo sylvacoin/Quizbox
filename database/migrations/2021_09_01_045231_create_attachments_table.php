@@ -19,7 +19,7 @@ class CreateAttachmentsTable extends Migration
             $table->string('file_path');
             $table->string('file_type');
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
     }
 

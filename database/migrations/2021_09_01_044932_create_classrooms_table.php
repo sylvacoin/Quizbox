@@ -22,7 +22,7 @@ class CreateClassroomsTable extends Migration
             $table->integer('status')->default(0);
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
     }
 
