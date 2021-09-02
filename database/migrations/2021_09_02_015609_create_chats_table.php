@@ -20,7 +20,7 @@ class CreateChatsTable extends Migration
             $table->enum('message_type', ['chat', 'quiz'])->default('chat');
             $table->foreignId('lesson_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('room_url');
-            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
