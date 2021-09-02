@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
+use Illuminate\Bus\Batch;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -11,9 +12,10 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class TeachersImport implements ToCollection, WithHeadingRow, SkipsOnError
+class TeachersImport implements ToCollection, WithHeadingRow, SkipsOnError, WithBatchInserts
 {
     use SkipsErrors, Importable;
 
@@ -31,6 +33,19 @@ class TeachersImport implements ToCollection, WithHeadingRow, SkipsOnError
             $user->assignRole('teacher');
             $user->notify(new WelcomeNotification($user->name, $password));
         }
+    }
+
+    public function batchSize(): int {
+        return 400;
+    }
+
+    public function onError(\Throwable $error){
+
+    } //works with SkipsOnError trait to skip error messages
+
+    public function failure( \Throwable $error)
+    {
+
     }
 
 }
