@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('channel-{room_url}', function ($user, $room_url) {
+   if (\Illuminate\Support\Facades\Auth::check() && $user == \Illuminate\Support\Facades\Auth::user())
+   {
+       return \Illuminate\Support\Facades\Auth::user();
+   }
+});
+
+

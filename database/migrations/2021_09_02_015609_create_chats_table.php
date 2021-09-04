@@ -17,7 +17,7 @@ class CreateChatsTable extends Migration
             $table->id();
             $table->foreignId('sender_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('message')->nullable();
-            $table->enum('message_type', ['chat', 'quiz'])->default('chat');
+            $table->enum('message_type', ['chat', 'quiz', 'notification'])->default('chat');
             $table->foreignId('lesson_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('room_url');
             $table->timestamp('created_at')->useCurrent();

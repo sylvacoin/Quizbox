@@ -34,6 +34,14 @@
                             <p>{{session('error')}}</p>
                         </div>
                     @endif
+
+                    @if(isset($errors) && $errors->any())
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                            @foreach( $errors->all() as $error )
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
                     <form action="{{route('teachers.save-upload')}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="shadow sm:rounded-md sm:overflow-hidden">

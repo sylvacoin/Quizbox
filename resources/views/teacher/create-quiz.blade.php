@@ -26,7 +26,7 @@
                                     <p>{{session('error')}}</p>
                                 </div>
                             @endif
-                            <form method="post" action="{{route('quiz.save', $lesson->id)}}">
+                            <form method="post" action="{{route('quiz.save', $lesson->id)}}" id="createQuizForm">
                                 @csrf
                                 <div class="flex flex-wrap -mx-3 mb-6">
                                     <div class="w-full px-3 mb-6 md:mb-0">
@@ -179,7 +179,7 @@
                                                             Option ${count}
                                                         </label>
                                                         <div class="relative flex w-full items-stretch">
-                                                            <input name="option[]" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text">
+                                                            <input name="options[]" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text">
                                                             <span class="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
                                                                 <i class="icofont-warning-alt" onClick="deleteOption(${count})"></i>
                                                             </span>
@@ -212,6 +212,26 @@
                                     return s || undefined;
                                 }
 
+                                $(document).on('submit', '#createQuizForm', function(e){
+                                    e.preventDefault();
+                                   $.ajax({
+                                       'url':$(this).action,
+                                       'method': 'POST',
+                                       'data': $(this).serialize(),
+                                       'success': function(data){
+                                           if (data.success)
+                                           {
+                                               window.location.href = '{{route('quiz.index', $lesson->id)}}';
+                                           }else{
+                                                alert( data.message );
+                                           }
+                                       },
+                                        error: function(err){
+                                           console.log(err)
+                                            alert( err.message );
+                                        }
+                                   })
+                                });
                             </script>
                         </div>
                     </div>

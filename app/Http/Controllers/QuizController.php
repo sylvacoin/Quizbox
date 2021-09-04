@@ -24,9 +24,12 @@ class QuizController extends Controller
 
     public function storeQuiz($lessonId, Request $request)
     {
+        Log::info($request->options);
+
         try{
             $lesson = Lesson::find($lessonId);
             $optionTypes = ['multichoice', 'subjective', 'boolean'];
+            $options = [];
 
             if (!$lesson)
                 throw new \Exception('Lesson was not found');
@@ -45,22 +48,35 @@ class QuizController extends Controller
             {
                 foreach($request->options as $key => $option)
                 {
-                    $quiz->quiz_options()->create([
+                    $options[] = [
                         'option_key' => $this->toAlpha($key),
                         'option_value' => $option,
-                    ]);
+                    ];
                 }
+
+                $quiz->quiz_options()->createMany($options);
+            }else if ($request->option_type == 3){
+                $booleanOptions = ['True', 'False'];
+                foreach($booleanOptions as $key => $option)
+                {
+                    $options[] = [
+                        'option_key' => $this->toAlpha($key),
+                        'option_value' => $option,
+                    ];
+                }
+
+                $quiz->quiz_options()->createMany($options);
             }
 
             session()->flash('flash.banner','Question was added successfully');
             session()->flash('flash.bannerStyle', 'success');
 
-            return redirect( route('quiz.index', $lessonId) );
+            return response()->json(['success' => true, 'message' => 'Ok']);
 
         }catch(\Exception $ex)
         {
             Log::error($ex);
-            return back()->with('error', $ex->getMessage());
+            return response()->json(['success' => false, 'message' => $ex->getMessage()]);
         }
     }
 

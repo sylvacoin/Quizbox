@@ -6,6 +6,7 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\StudentQuizResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,7 +90,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (){
 
     Route::group(['prefix' => 'chat'], function (){
         Route::post('send', [ChatController::class, 'sendMessage'])->name('chat.create');
+        Route::post('ask', [ChatController::class, 'askQuestion'])->name('quiz.ask');
+        Route::post('answer', [ChatController::class, 'answerQuestion'])->name('quiz.answer');
         Route::get('read/{room_url}', [ChatController::class, 'getLessonChats'])->name('chat.read');
+    });
+
+    Route::group(['prefix' => 'leaderboard'], function (){
+        Route::get('classes', [StudentQuizResultController::class, 'getStudentClasses'])->name('leaderboard.student.classes');
+        Route::get('my-classes', [StudentQuizResultController::class, 'getTeacherClasses'])->name('leaderboard.teacher.classes');
+        Route::get('all-classes', [StudentQuizResultController::class, 'getAllClasses'])->name('leaderboard.admin.classes');
+        Route::get('{classroomId}', [StudentQuizResultController::class, 'getLeaderBoard'])->name('leaderboard.ranking');
     });
 });
 

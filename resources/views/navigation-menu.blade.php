@@ -22,7 +22,7 @@
                         <x-jet-nav-link :href="route('classrooms.my-classes')" :active="request()->is('classrooms/my-classes')">
                             {{ __('My Classes') }}
                         </x-jet-nav-link>
-                        <x-jet-nav-link href="#">
+                        <x-jet-nav-link :href="route('leaderboard.student.classes')" :active="request()->is('leaderboard') || request()->is('leaderboard/*')">
                             {{ __('Leaderboard') }}
                         </x-jet-nav-link>
                     @endif
@@ -33,7 +33,7 @@
                         <x-jet-nav-link  :href="route('teacher.students')" :active="request()->is('students') || request()->is('students/*')">
                             {{ __('My Students') }}
                         </x-jet-nav-link>
-                        <x-jet-nav-link href="#">
+                        <x-jet-nav-link :href="route('leaderboard.teacher.classes')" :active="request()->is('leaderboard') || request()->is('leaderboard/*')">
                             {{ __('Leaderboard') }}
                         </x-jet-nav-link>
                     @endif
@@ -47,7 +47,7 @@
                         <x-jet-nav-link :href="route('classrooms.index')" :active="request()->is('classrooms') || request()->is('classrooms/*')">
                             {{ __('Classrooms') }}
                         </x-jet-nav-link>
-                        <x-jet-nav-link href="#">
+                        <x-jet-nav-link :href="route('leaderboard.admin.classes')" :active="request()->is('leaderboard') || request()->is('leaderboard/*')">
                             {{ __('Leaderboard') }}
                         </x-jet-nav-link>
                     @endif
@@ -184,7 +184,7 @@
                 <x-jet-responsive-nav-link  :href="route('classrooms.my-classes')" :active="request()->is('classrooms/my-classes')">
                     {{ __('My Classes') }}
                 </x-jet-responsive-nav-link>
-                <x-jet-responsive-nav-link href="#">
+                <x-jet-responsive-nav-link :href="route('leaderboard.student.classes')" :active="request()->is('leaderboard') || request()->is('leaderboard/*')">
                     {{ __('Leaderboard') }}
                 </x-jet-responsive-nav-link>
             @endif
@@ -195,7 +195,7 @@
                 <x-jet-responsive-nav-link :href="route('teacher.students')" :active="request()->is('students') || request()->is('students/*')">
                     {{ __('My Students') }}
                 </x-jet-responsive-nav-link>
-                <x-jet-responsive-nav-link href="#">
+                <x-jet-responsive-nav-link :href="route('leaderboard.teacher.classes')" :active="request()->is('leaderboard') || request()->is('leaderboard/*')">
                     {{ __('Leaderboard') }}
                 </x-jet-responsive-nav-link>
             @endif
@@ -209,7 +209,7 @@
                 <x-jet-responsive-nav-link :href="route('classrooms.index')" :active="request()->is('classrooms') || request()->is('classrooms/*')">
                     {{ __('Classrooms') }}
                 </x-jet-responsive-nav-link>
-                <x-jet-responsive-nav-link href="#">
+                <x-jet-responsive-nav-link :href="route('leaderboard.admin.classes')" :active="request()->is('leaderboard') || request()->is('leaderboard/*')">
                     {{ __('Leaderboard') }}
                 </x-jet-responsive-nav-link>
             @endif

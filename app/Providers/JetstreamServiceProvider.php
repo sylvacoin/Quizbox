@@ -17,6 +17,8 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->registerComponent('select');
         $this->registerComponent('link-button');
+        $this->registerComponent('radio-button');
+        $this->registerComponent('radio-button-wrapper');
     }
 
     /**

@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(ClassroomStudent::class, Classroom::class, 'owner_id',);
     }
+
+    public function latest_student_quiz_result()
+    {
+        return $this->hasOne(StudentQuizResult::class, 'student_id')->latest();
+    }
 }

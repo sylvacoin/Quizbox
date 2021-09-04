@@ -47,7 +47,8 @@ class AccountController extends Controller
 
         try{
             $file = $request->file('teacherList')->store('import');
-            (new TeachersImport)->import($file);
+            $import =  (new TeachersImport);
+            $import->import($file);
 
             session()->flash('flash.banner', 'Teachers were imported successfully');
             session()->flash('flash.bannerStyle', 'success');
@@ -57,7 +58,7 @@ class AccountController extends Controller
         }catch(\Exception $ex)
         {
             Log::error($ex);
-            return back()->withError('An error occurred list was not uploaded');
+            return back()->withError($ex->getMessage());
 
         }
     }
