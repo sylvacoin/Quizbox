@@ -45,7 +45,7 @@ class AccountController extends Controller
         ]);
 
         try{
-            $file = $request->file('teacherList')->store('import');
+            $file = $request->file('teacherList')->store('import', 's3');
             $import =  (new TeachersImport);
             $import->import($file);
 
