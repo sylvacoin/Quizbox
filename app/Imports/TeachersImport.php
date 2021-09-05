@@ -27,8 +27,7 @@ class TeachersImport implements
     WithHeadingRow,
     WithValidation,
     WithChunkReading,
-    SkipsOnFailure,
-    ShouldQueue
+    SkipsOnFailure
 {
     use SkipsErrors, Importable, RegistersEventListeners;
 
@@ -75,6 +74,7 @@ class TeachersImport implements
     public function onFailure(Failure ...$failures)
     {
         // TODO: Implement onFailure() method.
+        return $failures;
 
     }
 }
