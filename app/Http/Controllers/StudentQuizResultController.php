@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LeaderBoardResource;
 use App\Models\Classroom;
 use App\Models\Quiz;
 use App\Models\StudentQuizResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StudentQuizResultController extends Controller
 {
@@ -21,8 +23,29 @@ class StudentQuizResultController extends Controller
             ->get();
 
 //        dd($leaderboardResults->first()->user);
-
         return view('student.leaderboard', compact('leaderboardResults'));
+    }
+
+    public function getRanking( $classroomId )
+    {
+
+        try{
+            $leaderboardResults = StudentQuizResult::where('classroom_id', $classroomId)
+                ->with('user')
+                ->selectRaw("SUM(points) as total_points, classroom_id, student_id")
+                ->groupBy('student_id')
+                ->groupBy('classroom_id')
+                ->orderByDesc('total_points')
+                ->get();
+
+//        dd($leaderboardResults->first()->user);
+
+            return response()->json(['data' => LeaderBoardResource::collection($leaderboardResults), 'success' => true]);
+        }catch(\Exception $ex)
+        {
+            Log::error($ex);
+            return response()->json(['success' => false, 'message' => $ex->getMessage()]);
+        }
     }
 
     public function getTeacherClasses()

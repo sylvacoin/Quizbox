@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use mysql_xdevapi\Exception;
 
 class AccountController extends Controller
 {
@@ -133,7 +132,9 @@ class AccountController extends Controller
         $teacherId = Auth::user()->id;
         $students = ClassroomStudent::whereHas('classroom', function ($q) use ($teacherId) {
             $q->where('owner_id', $teacherId);
-        })->with('student')->paginate(10);
+        })->whereHas('student', function ($q){
+            $q->where('name', 'student');
+        })->paginate(10);
 
         return view('teacher.students', compact('students'));
     }

@@ -100,6 +100,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (){
         Route::get('my-classes', [StudentQuizResultController::class, 'getTeacherClasses'])->name('leaderboard.teacher.classes');
         Route::get('all-classes', [StudentQuizResultController::class, 'getAllClasses'])->name('leaderboard.admin.classes');
         Route::get('{classroomId}', [StudentQuizResultController::class, 'getLeaderBoard'])->name('leaderboard.ranking');
+        Route::get('read-rankings/{classroomId}', [StudentQuizResultController::class, 'getRanking'])->name('leaderboard.class.ranking');
     });
 });
 

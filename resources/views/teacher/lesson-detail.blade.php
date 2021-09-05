@@ -5,10 +5,25 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight flex-1 pr-4">
                 {{ __($lesson->name . ' Lesson Details') }}
             </h2>
-            <div>
-                <x-jet-button onClick="window.history.back()">
+            <div class="flex flex-row">
+                <x-jet-button onClick="window.history.back()" class="mr-2">
                     {{ __('Back') }}
                 </x-jet-button>
+                @if( $lesson->classroom->status == 0)
+                    <form method="POST" action="{{ route('classrooms.start', [$lesson->id, $lesson->classroom->room_id]) }}">
+                        @csrf
+                        <x-jet-button class="bg-red-500">
+                            {{ __('Start Class') }}
+                        </x-jet-button>
+                    </form>
+                @else
+                    <form method="POST" action="{{ route('classrooms.stop', [$lesson->id, $lesson->classroom->room_id]) }}">
+                        @csrf
+                        <x-jet-button>
+                            {{ __('End Class') }}
+                        </x-jet-button>
+                    </form>
+                @endif
             </div>
         </div>
     </x-slot>
@@ -27,38 +42,63 @@
                     <p>{{session('error')}}</p>
                 </div>
             @endif
-            <div class="w-min-full mb-4">
-                <div class="p-6 bg-white border-b border-gray-200 md:col-span-2 md:row-span-2">
-                    <div class="flex flex-row justify-between">
-                        <div class="md:flex-1">
-                            <div class="font-bold text-xl mb-2">Online Users</div>
-                        </div>
-                        <div>
-                            @if( $lesson->classroom->status == 0)
-                                <form method="POST" action="{{ route('classrooms.start', [$lesson->id, $lesson->classroom->room_id]) }}">
-                                    @csrf
-                                    <x-jet-button>
-                                        {{ __('Start Class') }}
-                                    </x-jet-button>
-                                </form>
-                            @else
-                                <form method="POST" action="{{ route('classrooms.stop', [$lesson->id, $lesson->classroom->room_id]) }}">
-                                    @csrf
-                                    <x-jet-button>
-                                        {{ __('End Class') }}
-                                    </x-jet-button>
-                                </form>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 <div class="p-6 bg-white border-b border-gray-200 md:row-span-2">
-                    <div class="font-bold text-xl mb-2">Lesson Notes</div>
-                    <div class="shadow overflow-hidden">
+                    <section class="w-full px-4 flex flex-col bg-white rounded-r-3xl">
+                        <div class="flex justify-between items-center h-24 border-b-2 mb-8">
+                            <div class="flex space-x-4 items-center">
+                                <h1 class="font-bold text-2xl">@unless(!$lesson) {{$lesson->title}} @endunless</h1>
+                            </div>
+                            <div>
+                                <ul class="flex text-gray-400 space-x-4">
 
-                    </div>
+                                    <li class="w-6 h-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                        </svg>
+                                    </li>
+                                    <li class="w-6 h-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                        </svg>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="overscroll-auto h-96 w-full flex flex-col space-y-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+                                <article class="mt-3 text-gray-500 leading-7 tracking-wider h-96 overscroll-auto">
+                                    @unless(!$lesson) {{$lesson->description}} @endunless
+                                </article>
+                                <article class="mt-3 text-gray-500 leading-7 tracking-wider">
+                                    @unless(!$lesson) {{$lesson->note}} @endunless
+                                </article>
+                        </div>
+                        <div>
+                            <ul class="flex flex-col space-x-4 mt-12">
+                                @if ( $lesson->attachments && count($lesson->attachments) > 0)
+                                    @foreach( $lesson->attachments as $k => $attachment)
+                                        <li class="h-10 flex flex-row items-center justify-between">
+                                            <div class="flex flex-row items-center">
+                                                <div class="w-10 h-10 border rounded-lg p-1 cursor-pointer transition duration-200 text-gray-300 hover:bg-gray-100">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                              d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                    </svg>
+                                                </div>
+                                                <div class="px-4 text-gray-500 leading-7 tracking-wider">
+                                                    <p>File {{ $k }}</p>
+                                                </div>
+                                            </div>
+                                            <x-jet-button class="flex justify-self-end" href="{{$attachment->path}}">Download</x-jet-button>
+                                        </li>
+                                    @endforeach
+                                @endif
+
+                            </ul>
+                        </div>
+                    </section>
                 </div>
                 @unless($lesson->classroom->status == 0)
                     <div class="p-6 bg-white border-b border-gray-200 ">
@@ -192,7 +232,7 @@
                                             @else
                                                 <tr>
                                                     <td class="px-6 py-4 whitespace-nowrap" colspan="4">
-                                                        <p class="text-red-300 text-center"> No classroom exists at the moment.</p>
+                                                        <p class="text-red-300 text-center"> No quiz exists at the moment.</p>
                                                     </td>
                                                 </tr>
                                             @endif
@@ -218,28 +258,19 @@
                         <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Classroom
+                                S/N
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Name
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Ranking
                             </th>
                         </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap" >
-                                <p> PHP </p>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap" >
-                                100th
-                            </td>
+                        <tbody class="bg-white divide-y divide-gray-200" id="ranking">
 
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap" colspan="4">
-                                <p class="text-red-300 text-center"> No ranking at the moment.</p>
-                            </td>
-                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -250,8 +281,11 @@
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
         const roomId = '{{ $lesson->classroom->room_id }}';
+        const rankingID = 'channel-ranking-{{ $lesson->classroom->id }}';
+        const classID = '{{$lesson->classroom->id}}';
         const lessonId = '{{ $lesson->id }}';
-        const sender = {{ Auth::user()->id }}
+        const sender = {{ Auth::user()->id }};
+        const classroomStatus= '{{$lesson->classroom->status}}';
 
         $('.stats').hide();
         $(document).on('click', '.row-trigger', function () {
@@ -273,6 +307,7 @@
 
         $(document).ready(function(){
             scrollToBottom();
+            //GET CHAT
             $.ajax({
                 url: `/chat/read/${roomId}`,
                 method:'get',
@@ -298,7 +333,29 @@
                 }
             });
 
-            const classroomStatus= '{{$lesson->classroom->status}}';
+            //GET RANKING
+            $.ajax({
+                url: `/leaderboard/read-rankings/${classID}`,
+                method:'get',
+                success: function(resp)
+                {
+                    if (resp.success === true)
+                    {
+                        var data = resp.data;
+                        displayRanking( data );
+                    }else{
+                        $('#ranking').html(`<tr>
+                                            <td class="px-6 py-4 whitespace-nowrap" colspan="4">
+                                                <p class="text-red-300 text-center"> No ranking exists at the moment.</p>
+                                            </td>
+                                        </tr>`);
+                    }
+                },
+                error: function(e)
+                {
+                    console.log(e.message);
+                }
+            });
 
             // Enable pusher logging - don't include this in production
             // Pusher.logToConsole = false;
@@ -320,7 +377,26 @@
                 }
                 scrollToBottom();
             });
+
+            var rankingChannel = window.pusher.subscribe(rankingID);
+            rankingChannel.bind('qp_rankings', function(data) {
+                console.log(data);
+                displayRanking(data.ranking);
+            });
         });
+
+        function displayRanking( data)
+        {
+            let content = '';
+            $.each(data, function(idx, ranking){
+                content += `<tr>
+                                <td class="px-6 py-4 whitespace-nowrap" ><p> ${ idx + 1 } </p></td>
+                                <td class="px-6 py-4 whitespace-nowrap" ><p> ${ ranking.name } </p></td>
+                                <td class="px-6 py-4 whitespace-nowrap" > ${ranking.point}</td>
+                            </tr>`
+            });
+            $('#ranking').html(content);
+        }
 
         const canvas = document.getElementById('chatWindow');
 

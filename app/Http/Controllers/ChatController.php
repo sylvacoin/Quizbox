@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendMessageEvent;
+use App\Events\SendRankingEvent;
+use App\Http\Resources\LeaderBoardResource;
 use App\Models\Chat;
 use App\Models\Classroom;
 use App\Models\Quiz;
@@ -137,7 +139,10 @@ class ChatController extends Controller
                 'room_url' => $request->room_url
             ]);
 
+            $rankings = $this->getRanking($classroom->id);
+
             broadcast( new SendMessageEvent( $chat ) )->toOthers();
+            broadcast(new SendRankingEvent( $classroom->id, $rankings));
 
             //TODO: get the leaderboard here and push result to broadcast;
             return response()->json(['success' => true, 'message' => 'ok']);
@@ -149,6 +154,21 @@ class ChatController extends Controller
                 'message' => $ex->getMessage()
             ]);
         }
+    }
+
+    public function getRanking( $classroomId )
+    {
+        $leaderboardResults = StudentQuizResult::where('classroom_id', $classroomId)
+            ->with('user')
+            ->selectRaw("SUM(points) as total_points, classroom_id, student_id")
+            ->groupBy('student_id')
+            ->groupBy('classroom_id')
+            ->orderByDesc('total_points')
+            ->get();
+
+//        dd($leaderboardResults->first()->user);
+
+        return LeaderBoardResource::collection($leaderboardResults);
     }
 
     public function getLessonChats($roomId)

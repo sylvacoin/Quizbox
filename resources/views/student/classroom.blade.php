@@ -52,7 +52,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <section>
+                        <div class="overscroll-auto h-96 w-full flex flex-col space-y-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
                             <article class="mt-8 text-gray-500 leading-7 tracking-wider">
                                 <p>@unless(!$notes) {{$notes->description}} @endunless</p>
                             </article>
@@ -80,40 +80,68 @@
                                     @endif
 
                             </ul>
-                        </section>
+                        </div>
                     </section>
                 </div>
-                <div class="p-6 bg-white border-b border-gray-200 ">
-                    <div class="font-bold text-md mb-2 uppercase">Live Chat
-                    </div>
-
-                    <div class="flex-1 justify-between flex flex-col h-96">
-                        <div id="chatWindow" class=" w-full flex flex-col space-y-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-                            <div class="flex justify-center"> <span class="text-gray-500 text-xs">Class started</span> </div>
-
-
+                <div>
+                    <div class="p-6 bg-white border-b border-gray-200 ">
+                        <div class="font-bold text-md mb-2 uppercase">Live Chat
                         </div>
-                        <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
-                            <div class="relative flex">
-                                <input type="text" placeholder="Write Something" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full py-3" id="textarea">
-                                <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
-                                    <button id="sendMessage" type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 transform rotate-90">
-                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                                        </svg>
-                                    </button>
+                        <div class="flex-1 justify-between flex flex-col h-96">
+                            <div id="chatWindow" class=" w-full flex flex-col space-y-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+                                <div class="flex justify-center"> <span class="text-gray-500 text-xs">Class started</span> </div>
+
+
+                            </div>
+                            <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
+                                <div class="relative flex">
+                                    <input type="text" placeholder="Write Something" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full py-3" id="textarea">
+                                    <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+                                        <button id="sendMessage" type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 transform rotate-90">
+                                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="mt-4">
+                        <div class="p-6 bg-white border-b border-gray-200 ">
+                            <div class="font-bold text-md mb-2 uppercase">Class LeaderBoard</div>
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        S/N
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Ranking
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="ranking">
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
         </div>
     </div>
-
 {{--    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>--}}
     <script>
         const roomId = '{{ $notes->classroom->room_id }}';
+        const rankingID = 'channel-ranking-{{ $notes->classroom->id }}';
+        const classID = '{{$notes->classroom->id}}';
         const lessonId = '{{ $notes->id }}';
         const sender = {{ Auth::user()->id }};
         const channel = 'channel-{{ $notes->classroom->room_id }}';
@@ -124,6 +152,135 @@
             console.log(id)
             $('.row'+id).toggle('slow');
         });
+
+        $(document).ready(function(){
+            scrollToBottom();
+            $.ajax({
+                url: `/chat/read/${roomId}`,
+                method:'get',
+                success: function(resp)
+                {
+                    var data = resp.data;
+
+                    $.each(data, function(idx, history){
+                        if (history.message_type === 'chat') {
+                            appendMessage(history.message, history.sender_id);
+                        }else if (history.message_type === 'notification'){
+                            appendNotification(history.message);
+                        }else{
+                            let records = JSON.parse(history.message);
+                            appendQuestion(records.id, records.question, records.options, history.sender_id);
+                        }
+                    });
+                },
+                error: function(e)
+                {
+                    console.log(e.message);
+                }
+            });
+
+            //GET RANKING
+            $.ajax({
+                url: `/leaderboard/read-rankings/${classID}`,
+                method:'get',
+                success: function(resp)
+                {
+                    if (resp.success === true)
+                    {
+                        var data = resp.data;
+                        displayRanking( data );
+                    }else{
+                        $('#ranking').html(`<tr>
+                                            <td class="px-6 py-4 whitespace-nowrap" colspan="4">
+                                                <p class="text-red-300 text-center"> No ranking exists at the moment.</p>
+                                            </td>
+                                        </tr>`);
+                    }
+                },
+                error: function(e)
+                {
+                    console.log(e.message);
+                }
+            });
+
+            const classroomStatus= '{{$notes->classroom->status}}';
+
+            var channel = window.pusher.subscribe('channel-'+roomId);
+            channel.bind('qp_groupchat', function(data) {
+                if (data.message.message_type === 'chat') {
+                    appendMessage(data.message.message, data.message.sender_id);
+                } else if (data.message.message_type === 'notification'){
+                    appendNotification(data.message.message);
+                }else{
+                    let records = JSON.parse(data.message.message);
+                    appendQuestion(records.id, records.question, records.options, data.message.sender_id);
+                }
+                scrollToBottom();
+            });
+
+            var rankingChannel = window.pusher.subscribe(rankingID);
+            rankingChannel.bind('qp_rankings', function(data) {
+                console.log(data);
+                displayRanking(data.ranking);
+            });
+        });
+
+        const canvas = document.getElementById('chatWindow');
+
+        function displayRanking( data)
+        {
+            let content = '';
+            $.each(data, function(idx, ranking){
+                content += `<tr>
+                                <td class="px-6 py-4 whitespace-nowrap" ><p> ${ idx + 1 } </p></td>
+                                <td class="px-6 py-4 whitespace-nowrap" ><p> ${ ranking.name } </p></td>
+                                <td class="px-6 py-4 whitespace-nowrap" > ${ranking.point}</td>
+                            </tr>`
+            });
+            $('#ranking').html(content);
+        }
+
+        function appendMessage(message, senderId) {
+            let shouldScroll = canvas.scrollTop + canvas.clientHeight === canvas.scrollHeight;
+            if (senderId !== sender)
+            {
+                $('#chatWindow')
+                    .append(`<div class="chat-message">
+                                    <div class="flex items-end">
+                                        <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+                                            <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">${message}</span></div>
+                                        </div>
+                                        <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
+                                    </div>
+                                </div>`);
+
+            }else{
+                $('#chatWindow')
+                    .append(`<div class="chat-message">
+                                    <div class="flex items-end justify-end">
+                                        <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+                                            <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">${message}</span></div>
+                                        </div>
+                                        <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-2">
+                                    </div>
+                                </div>`);
+            }
+
+            if (!shouldScroll) {
+                scrollToBottom();
+            }
+        }
+
+        function appendNotification(message) {
+            let shouldScroll = canvas.scrollTop + canvas.clientHeight === canvas.scrollHeight;
+
+            $('#chatWindow')
+                .append(`<div class="flex justify-center"> <span class="text-gray-500 text-xs">${message}</span> </div>`);
+
+            if (!shouldScroll) {
+                scrollToBottom();
+            }
+        }
 
         function appendQuestion(quid, question, options, senderId) {
             let shouldScroll = canvas.scrollTop + canvas.clientHeight === canvas.scrollHeight;
@@ -175,92 +332,6 @@
                         </div>
                     `);
             }
-
-            if (!shouldScroll) {
-                scrollToBottom();
-            }
-        }
-
-        $(document).ready(function(){
-            scrollToBottom();
-            $.ajax({
-                url: `/chat/read/${roomId}`,
-                method:'get',
-                success: function(resp)
-                {
-                    var data = resp.data;
-
-                    $.each(data, function(idx, history){
-                        if (history.message_type === 'chat') {
-                            appendMessage(history.message, history.sender_id);
-                        }else if (history.message_type === 'notification'){
-                            appendNotification(history.message);
-                        }else{
-                            let records = JSON.parse(history.message);
-                            appendQuestion(records.id, records.question, records.options, history.sender_id);
-                        }
-                    });
-                },
-                error: function(e)
-                {
-                    console.log(e.message);
-                }
-            });
-
-            const classroomStatus= '{{$notes->classroom->status}}';
-
-            var channel = window.pusher.subscribe('channel-'+roomId);
-            channel.bind('qp_groupchat', function(data) {
-                if (data.message.message_type === 'chat') {
-                    appendMessage(data.message.message, data.message.sender_id);
-                } else if (data.message.message_type === 'notification'){
-                    appendNotification(data.message.message);
-                }else{
-                    let records = JSON.parse(data.message.message);
-                    appendQuestion(records.id, records.question, records.options, data.message.sender_id);
-                }
-                scrollToBottom();
-            });
-        });
-
-        const canvas = document.getElementById('chatWindow');
-
-        function appendMessage(message, senderId) {
-            let shouldScroll = canvas.scrollTop + canvas.clientHeight === canvas.scrollHeight;
-            if (senderId !== sender)
-            {
-                $('#chatWindow')
-                    .append(`<div class="chat-message">
-                                    <div class="flex items-end">
-                                        <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
-                                            <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">${message}</span></div>
-                                        </div>
-                                        <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
-                                    </div>
-                                </div>`);
-
-            }else{
-                $('#chatWindow')
-                    .append(`<div class="chat-message">
-                                    <div class="flex items-end justify-end">
-                                        <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
-                                            <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">${message}</span></div>
-                                        </div>
-                                        <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-2">
-                                    </div>
-                                </div>`);
-            }
-
-            if (!shouldScroll) {
-                scrollToBottom();
-            }
-        }
-
-        function appendNotification(message) {
-            let shouldScroll = canvas.scrollTop + canvas.clientHeight === canvas.scrollHeight;
-
-            $('#chatWindow')
-                .append(`<div class="flex justify-center"> <span class="text-gray-500 text-xs">${message}</span> </div>`);
 
             if (!shouldScroll) {
                 scrollToBottom();
