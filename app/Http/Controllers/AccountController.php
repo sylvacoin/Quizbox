@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
@@ -45,9 +46,18 @@ class AccountController extends Controller
         ]);
 
         try{
-            $file = $request->file('teacherList')->store('import', 's3');
+//            $file = $request->file('teacherList')->store('import', 's3');
+            $uploadedFile = $request->file('teacherList');
+
+            $fileName = time() . $uploadedFile->getClientOriginalName();
+            $path = 'import/' . $fileName;
+
+
+            Storage::disk('s3')->put($path, file_get_contents($uploadedFile), 'public');
+
             $import =  (new TeachersImport);
-            $import->import($file);
+
+            $import->import($path, 's3', \Maatwebsite\Excel\Excel::XLSX);
 
             session()->flash('flash.banner', 'Teachers were imported successfully');
             session()->flash('flash.bannerStyle', 'success');
