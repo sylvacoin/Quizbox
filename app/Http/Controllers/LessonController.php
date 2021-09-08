@@ -133,7 +133,7 @@ class LessonController extends Controller
                     $fileType = $file->getMimeType();
 
                     $lesson->attachments()->create([
-                        'file_path' => $filePath,
+                        'file_path' => $path,
                         'file_name' => $fileName,
                         'file_type' => $fileType
                     ]);
@@ -169,7 +169,17 @@ class LessonController extends Controller
 //               throw new \Exception('File was not found on server');
 //            }
 
-            return Storage::download($path);
+
+            $content = Storage::disk('s3')->get($path);
+            $headers = [
+                'Content-Type' => $file->file_type,
+                'Content-Description' => 'File Transfer',
+                'Content-Disposition' => "attachment; filename={$file->file_name}",
+                'filename'=> $file->file_name
+            ];
+
+            return response($content, 200, $headers);
+
         }
         catch( \Exception $ex)
         {

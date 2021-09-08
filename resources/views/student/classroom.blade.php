@@ -59,28 +59,27 @@
                             <article class="mt-8 text-gray-500 leading-7 tracking-wider">
                                 <p>@unless(!$notes) {{$notes->note}} @endunless</p>
                             </article>
-                            <ul class="flex flex-col space-x-4 mt-12">
-                                @if ( $notes->attachments && count($notes->attachments) > 0)
-                                    @foreach( $notes->attachments as $k => $attachment)
-                                <li class="h-10 flex flex-row items-center justify-between">
-                                    <div class="flex flex-row items-center">
-                                        <div class="w-10 h-10 border rounded-lg p-1 cursor-pointer transition duration-200 text-gray-300 hover:bg-gray-100">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                                            </svg>
-                                        </div>
-                                        <div class="px-4 text-gray-500 leading-7 tracking-wider">
-                                            <a href="{{ route('lessons.download', $attachment->id) }}">{{ isset($attachment->file_name) ? $attachment->file_name : 'File '.$k  }}</a>
-                                        </div>
-                                    </div>
-                                    <x-jet-button class="flex justify-self-end" href="{{ route('lessons.download', $attachment->id) }}">Download</x-jet-button>
-                                </li>
-                                    @endforeach
-                                    @endif
-
-                            </ul>
                         </div>
+                        <ul class="flex flex-col space-x-4 mt-12">
+                            @if ( $notes->attachments && count($notes->attachments) > 0)
+                                @foreach( $notes->attachments as $k => $attachment)
+                                    <li class="h-10 flex flex-row items-center justify-between">
+                                        <div class="flex flex-row items-center">
+                                            <div class="w-10 h-10 border rounded-lg p-1 cursor-pointer transition duration-200 text-gray-300 hover:bg-gray-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                          d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                </svg>
+                                            </div>
+                                            <div class="px-4 text-gray-500 leading-7 tracking-wider">
+                                                <a href="{{ route('lessons.download', $attachment->id) }}">{{ isset($attachment->file_name) ? $attachment->file_name : 'File '.$k  }}</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @endif
+
+                        </ul>
                     </section>
                 </div>
                 <div>
