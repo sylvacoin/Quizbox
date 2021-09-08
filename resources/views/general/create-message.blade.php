@@ -90,7 +90,7 @@
                     '_token': `{{ csrf_token() }}`
                 },
                 'success': function(data){
-                    alert(JSON.stringify(data));
+;
                     if (data.success)
                     {
                         window.location.href = '{{route('inbox')}}';
@@ -100,7 +100,6 @@
                 },
                 error: function(err){
                     console.log(err)
-                    alert( err.message );
                 }
             })
         });

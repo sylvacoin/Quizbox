@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\TeachersImport;
+use App\Models\Classroom;
 use App\Models\ClassroomStudent;
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
@@ -143,11 +144,14 @@ class AccountController extends Controller
     public function getTeacherStudents()
     {
         $teacherId = Auth::user()->id;
-        $students = ClassroomStudent::whereHas('classroom', function ($q) use ($teacherId) {
-            $q->where('owner_id', $teacherId);
-        })->whereHas('student', function ($q){
-            $q->where('name', 'student');
-        })->paginate(10);
+//        $students = ClassroomStudent::whereHas('classroom', function ($q) use ($teacherId) {
+//            $q->where('owner_id', $teacherId);
+//        })->whereHas('student', function ($q){
+//            $q->where('name', 'student');
+//        })->paginate(10);
+
+        $classIds = Classroom::where('owner_id', $teacherId)->pluck('id');
+        $students = ClassroomStudent::whereIn('classroom_id', $classIds)->with('student')->paginate();
 
         return view('teacher.students', compact('students'));
     }

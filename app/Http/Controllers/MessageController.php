@@ -42,11 +42,11 @@ class MessageController extends Controller
         return view('general.create-message');
     }
 
-    public function sendUserMessage($studentId)
+    public function sendUserMessage($userId)
     {
         try{
-            $student = User::find($studentId);
-            if (!$student)
+            $user = User::find($userId);
+            if (!$user)
                 throw new \Exception('user was not found');
 
             return view('general.create-message', compact('user'));

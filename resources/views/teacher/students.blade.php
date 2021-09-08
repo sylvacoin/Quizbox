@@ -73,6 +73,9 @@
                                                     Student
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <a href="{{ route('inbox.user', $classStudent->student_id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                        <i class="fa fa-ban"></i>
+                                                        Send Message</a> |
                                                     <a href="#" class="text-indigo-600 hover:text-indigo-900">
                                                         <i class="fa fa-ban"></i>
                                                         Block</a>
