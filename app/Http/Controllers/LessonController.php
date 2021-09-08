@@ -129,7 +129,7 @@ class LessonController extends Controller
                     $path = 'downloads/'.$lesson->id.'/' . $fileName;
                     Storage::disk('s3')->put($path, file_get_contents($file), 'public');
 
-                    $filePath = Storage::url( $path );
+                    $filePath = Storage::disk('s3')->url($path);
                     $fileType = $file->getMimeType();
 
                     $lesson->attachments()->create([
@@ -165,9 +165,9 @@ class LessonController extends Controller
                 throw new Exception('File was not found');
 
             $path = $file->file_path;
-            if (!Storage::disk('s3')->exists($path)) {
-               throw new \Exception('File was not found');
-            }
+//            if (Storage::disk('s3')->missing($path)) {
+//               throw new \Exception('File was not found on server');
+//            }
 
             return Storage::download($path);
         }

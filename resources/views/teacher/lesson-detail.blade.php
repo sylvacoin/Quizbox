@@ -88,10 +88,10 @@
                                                     </svg>
                                                 </div>
                                                 <div class="px-4 text-gray-500 leading-7 tracking-wider">
-                                                    <p>{{ isset($attachment->name) ? $attachment->name : 'File '.$k  }}</p>
+                                                    <a href="{{ route('lessons.download', $attachment->id) }}">{{ isset($attachment->file_name) ? $attachment->file_name : 'File '.$k  }}</a>
                                                 </div>
                                             </div>
-                                            <x-jet-button class="flex justify-self-end" href="{{ route('lessons.download', $attachment->id) }}">Download</x-jet-button>
+
                                         </li>
                                     @endforeach
                                 @endif

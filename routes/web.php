@@ -108,6 +108,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (){
     Route::group([], function(){
         Route::get('inbox', [MessageController::class, 'inbox'])->name('inbox');
         Route::get('single/{messageId}', [MessageController::class, 'singleMessage'])->name('inbox.single');
+        Route::get('create-message/{messageId}', [MessageController::class, 'sendUserMessage'])->name('inbox.user');
         Route::get('create-message', [MessageController::class, 'createMessage'])->name('inbox.create');
         Route::get('reply-message/{messageId}', [MessageController::class, 'replyMessage'])->name('inbox.reply');
         Route::post('create-message', [MessageController::class, 'sendMessage'])->name('inbox.send');

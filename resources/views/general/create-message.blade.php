@@ -37,7 +37,7 @@
                                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                             Recipient Email Address
                                         </label>
-                                        <input id="recipient" name="recipient" value="{{ isset($sender) ? $sender : (isset($student) ? $student->email : old('recipient') ) }}" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text">
+                                        <input id="recipient" name="recipient" value="{{ isset($sender) ? $sender : (isset($user) ? $user->email : old('recipient') ) }}" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text">
                                         <p class="text-gray-600 text-xs italic">Separate email address of recipients with ;</p>
                                     </div>
                                 </div>
