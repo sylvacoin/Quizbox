@@ -79,8 +79,8 @@ class User extends Authenticatable
 
     public function Classroom_students()
     {
-//        return $this->hasManyThrough(ClassroomStudent::class, Classroom::class, 'owner_id');
-        return $this->hasMany(ClassroomStudent::class, 'student_id');
+        return $this->hasManyThrough(ClassroomStudent::class, Classroom::class, 'owner_id');
+//        return $this->hasMany(ClassroomStudent::class, 'student_id');
 
     }
 
