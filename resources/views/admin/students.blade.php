@@ -40,7 +40,7 @@
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
 
-                                    @if (isset($students) && !empty($students))
+                                    @if (isset($students) && $students->count() > 0)
                                         @foreach($students as $student)
                                             <tr>
                                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -82,7 +82,7 @@
                                     @else
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap" colspan="5">
-                                                <p class="text-red-300 text-center"> No student exists at the moment. Upload a list</p>
+                                                <p class="text-red-300 text-center"> No student exists at the moment.</p>
                                             </td>
                                         </tr>
                                     @endif

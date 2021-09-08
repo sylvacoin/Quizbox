@@ -15,8 +15,8 @@ class CreateStudentQuizResultsTable extends Migration
     {
         Schema::create('student_quiz_results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('users');
-            $table->foreignId('quiz_id')->constrained();
+            $table->foreignId('student_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
             $table->string('answer');
             $table->boolean('is_correct_answer');
             $table->boolean('points');

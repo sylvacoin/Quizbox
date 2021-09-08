@@ -71,10 +71,13 @@
                                             </svg>
                                         </div>
                                         <div class="px-4 text-gray-500 leading-7 tracking-wider">
-                                            <p>File {{ $k }}</p>
+                                            <p>{{ isset($attachment->name) ? $attachment->name : 'File '.$k  }}</p>
+                                        </div>
+                                        <div>
+                                            {{ $attachment->file_type }}
                                         </div>
                                     </div>
-                                    <x-jet-button class="flex justify-self-end" href="{{$attachment->path}}">Download</x-jet-button>
+                                    <x-jet-button class="flex justify-self-end" href="{{ route('lessons.download', $attachment->id) }}">Download</x-jet-button>
                                 </li>
                                     @endforeach
                                     @endif
@@ -151,6 +154,13 @@
             const id = $(this).data('row');
             console.log(id)
             $('.row'+id).toggle('slow');
+        });
+
+        $(document).on('keypress', '#textarea', function(e){
+            if (e.keyCode === 13)
+            {
+                $('#sendMessage').click();
+            }
         });
 
         $(document).ready(function(){

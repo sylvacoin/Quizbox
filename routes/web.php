@@ -7,6 +7,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\StudentQuizResultController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (){
 //        Route::get('{id}/edit', [LessonController::class, 'editLesson'])->name('lessons.edit');
 //        Route::post('{id}/edit', [LessonController::class, 'updateLesson'])->name('lessons.update');
         Route::get('{id}/quiz', [QuizController::class, 'getQuizzes'])->name('quiz.index');
+        Route::get('download/{id}', [LessonController::class, 'downloadFile'])->name('lessons.download');
     });
 
 
@@ -101,6 +103,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (){
         Route::get('all-classes', [StudentQuizResultController::class, 'getAllClasses'])->name('leaderboard.admin.classes');
         Route::get('{classroomId}', [StudentQuizResultController::class, 'getLeaderBoard'])->name('leaderboard.ranking');
         Route::get('read-rankings/{classroomId}', [StudentQuizResultController::class, 'getRanking'])->name('leaderboard.class.ranking');
+    });
+
+    Route::group([], function(){
+        Route::get('inbox', [MessageController::class, 'inbox'])->name('inbox');
+        Route::get('single/{messageId}', [MessageController::class, 'singleMessage'])->name('inbox.single');
+        Route::get('create-message', [MessageController::class, 'createMessage'])->name('inbox.create');
+        Route::get('reply-message/{messageId}', [MessageController::class, 'replyMessage'])->name('inbox.reply');
+        Route::post('create-message', [MessageController::class, 'sendMessage'])->name('inbox.send');
     });
 });
 

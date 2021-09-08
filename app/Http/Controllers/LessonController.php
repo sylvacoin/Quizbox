@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attachment;
 use App\Models\Classroom;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use mysql_xdevapi\Exception;
 
 class LessonController extends Controller
 {
@@ -121,11 +124,17 @@ class LessonController extends Controller
             {
                 foreach($request->file('attachments') as $file)
                 {
-                    $filePath = $file->store('lesson/'.$lesson->id.'/');
+
+                    $fileName = time() . $file->getClientOriginalName();
+                    $path = 'downloads/'.$lesson->id.'/' . $fileName;
+                    Storage::disk('s3')->put($path, file_get_contents($file), 'public');
+
+                    $filePath = Storage::url( $path );
                     $fileType = $file->getMimeType();
 
                     $lesson->attachments()->create([
                         'file_path' => $filePath,
+                        'file_name' => $fileName,
                         'file_type' => $fileType
                     ]);
                 }
@@ -143,7 +152,29 @@ class LessonController extends Controller
         }catch (\Exception $ex)
         {
             Log::error($ex);
-            return back()->with('error', 'An error occurred. Please contact administrator');
+            return back()->with('error', $ex->getMessage());
+        }
+    }
+
+    public function downloadFile( $id )
+    {
+        try{
+            $file = Attachment::find($id);
+
+            if (!$file)
+                throw new Exception('File was not found');
+
+            $path = $file->file_path;
+            if (!Storage::disk('s3')->exists($path)) {
+               throw new \Exception('File was not found');
+            }
+
+            return Storage::download($path);
+        }
+        catch( \Exception $ex)
+        {
+            Log::error($ex);
+            return back()->with('error', $ex->getMessage());
         }
     }
 }

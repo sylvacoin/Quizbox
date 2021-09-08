@@ -29,7 +29,16 @@ class QuizController extends Controller
         try{
             $lesson = Lesson::find($lessonId);
             $optionTypes = ['multichoice', 'subjective', 'boolean'];
+            $booleanOptions = ['True', 'False'];
+            $answer = $request->answer[$request->option_type];
             $options = [];
+            $booleanAnswer = '';
+
+            if ($request->option_type == 3)
+            {
+                $answerKey = array_search(ucwords($answer), $booleanOptions);
+                $booleanAnswer = $this->toAlpha( $answerKey );
+            }
 
             if (!$lesson)
                 throw new \Exception('Lesson was not found');
@@ -38,7 +47,7 @@ class QuizController extends Controller
             $quiz = $lesson->quizzes()->create([
                 'question' => $request->question,
                 'option_type' => $optionTypes[$request->option_type - 1],
-                'answer' => $request->answer[$request->option_type]
+                'answer' => $request->option_type == 3 ? $booleanAnswer : $answer
             ]);
 
             if (!$quiz)
@@ -56,7 +65,7 @@ class QuizController extends Controller
 
                 $quiz->quiz_options()->createMany($options);
             }else if ($request->option_type == 3){
-                $booleanOptions = ['True', 'False'];
+
                 foreach($booleanOptions as $key => $option)
                 {
                     $options[] = [
@@ -66,6 +75,7 @@ class QuizController extends Controller
                 }
 
                 $quiz->quiz_options()->createMany($options);
+
             }
 
             session()->flash('flash.banner','Question was added successfully');

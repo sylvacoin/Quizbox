@@ -16,6 +16,9 @@
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                     @if (Auth::User()->hasRole('student'))
+                        <x-jet-nav-link :href="route('inbox')" :active="request()->is('inbox') || request()->is('create-message') || request()->is('reply-message')">
+                            {{ __('Inbox') }}
+                        </x-jet-nav-link>
                         <x-jet-nav-link :href="route('classrooms.find')" :active="request()->is('classrooms/find')">
                             {{ __('Find Classroom') }}
                         </x-jet-nav-link>
@@ -27,6 +30,9 @@
                         </x-jet-nav-link>
                     @endif
                     @if (Auth::User()->hasRole('teacher'))
+                        <x-jet-nav-link :href="route('inbox')" :active="request()->is('inbox') || request()->is('create-message') || request()->is('reply-message')">
+                            {{ __('Inbox') }}
+                        </x-jet-nav-link>
                         <x-jet-nav-link  :href="route('teacher.classrooms')" :active="request()->is('classrooms') || request()->is('classrooms/*')">
                             {{ __('My Classrooms') }}
                         </x-jet-nav-link>
@@ -38,6 +44,10 @@
                         </x-jet-nav-link>
                     @endif
                     @if (Auth::User()->hasRole('administrator'))
+
+                        <x-jet-nav-link :href="route('inbox')" :active="request()->is('inbox') || request()->is('create-message') || request()->is('reply-message')">
+                            {{ __('Inbox') }}
+                        </x-jet-nav-link>
                         <x-jet-nav-link :href="route('teachers.index')" :active="request()->is('teachers') || request()->is('teachers/*')">
                             {{ __('Teachers') }}
                         </x-jet-nav-link>
@@ -178,6 +188,9 @@
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
             @if (Auth::User()->hasRole('student'))
+                <x-jet-responsive-nav-link :href="route('inbox')" :active="request()->is('inbox') || request()->is('create-message') || request()->is('reply-message')">
+                    {{ __('Inbox')
+                </x-jet-responsive-nav-link>
                 <x-jet-responsive-nav-link :href="route('classrooms.find')" :active="request()->is('classrooms/find')">
                     {{ __('Find Classroom') }}
                 </x-jet-responsive-nav-link>

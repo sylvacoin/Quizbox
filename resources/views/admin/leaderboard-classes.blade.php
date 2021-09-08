@@ -84,7 +84,7 @@
                                     @else
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap" colspan="3">
-                                                <p class="text-red-300 text-center"> You have no classroom at the moment please subsctibe to one</p>
+                                                <p class="text-red-300 text-center"> No leaderboard / classes has been added yet</p>
                                             </td>
                                         </tr>
                                     @endif

@@ -57,7 +57,7 @@
                                     </thead>
                                    <tbody class="bg-white divide-y divide-gray-200">
 
-                                    @if (isset($teachers) && !empty($teachers))
+                                    @if (isset($teachers) && $teachers->count() > 0)
                                         @foreach($teachers as $teacher)
                                             <tr>
                                                 <td class="px-6 py-4 whitespace-nowrap">
