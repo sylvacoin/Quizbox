@@ -76,6 +76,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (){
 //        Route::post('{id}/edit', [LessonController::class, 'updateLesson'])->name('lessons.update');
         Route::get('{id}/quiz', [QuizController::class, 'getQuizzes'])->name('quiz.index');
         Route::get('download/{id}', [LessonController::class, 'downloadFile'])->name('lessons.download');
+
+        //API
+        Route::get('{id}', [LessonController::class, 'apiGetLesson'])->name('api.lessons.show');
     });
 
 

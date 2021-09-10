@@ -189,8 +189,9 @@
             </x-jet-responsive-nav-link>
             @if (Auth::User()->hasRole('student'))
                 <x-jet-responsive-nav-link :href="route('inbox')" :active="request()->is('inbox') || request()->is('create-message') || request()->is('reply-message')">
-                    {{ __('Inbox')
+                    {{ __('Inbox') }}
                 </x-jet-responsive-nav-link>
+
                 <x-jet-responsive-nav-link :href="route('classrooms.find')" :active="request()->is('classrooms/find')">
                     {{ __('Find Classroom') }}
                 </x-jet-responsive-nav-link>

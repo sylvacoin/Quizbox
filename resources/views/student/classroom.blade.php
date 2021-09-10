@@ -29,10 +29,16 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
                 <div class="px-6 bg-white border-b border-gray-200 col-span-2">
+                    <section class="w-full px-4 py-4 flex flex-col bg-white rounded-r-3xl mb-3" style="display:none">
+                        <label for="courses">Select Course</label>
+                        <x-jet-select id="courses">
+                            <option value="select" disabled> -- Select -- </option>
+                        </x-jet-select>
+                    </section>
                     <section class="w-full px-4 flex flex-col bg-white rounded-r-3xl">
                         <div class="flex justify-between items-center h-24 border-b-2 mb-8">
                             <div class="flex space-x-4 items-center">
-                                <h1 class="font-bold text-2xl">@unless(!$notes) {{$notes->title}} @endunless</h1>
+                                <h1 class="font-bold text-2xl" id="courseTitle">@unless(!$notes) {{$notes->title}} @endunless</h1>
                             </div>
                             <div>
                                 <ul class="flex text-gray-400 space-x-4">
@@ -53,14 +59,14 @@
                             </div>
                         </div>
                         <div class="overscroll-auto h-96 w-full flex flex-col space-y-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-                            <article class="mt-8 text-gray-500 leading-7 tracking-wider">
+                            <article class="mt-8 text-gray-500 leading-7 tracking-wider" id="courseDescription">
                                 <p>@unless(!$notes) {{$notes->description}} @endunless</p>
                             </article>
-                            <article class="mt-8 text-gray-500 leading-7 tracking-wider">
+                            <article class="mt-8 text-gray-500 leading-7 tracking-wider" id="courseNote ">
                                 <p>@unless(!$notes) {{$notes->note}} @endunless</p>
                             </article>
                         </div>
-                        <ul class="flex flex-col space-x-4 mt-12">
+                        <ul class="flex flex-col space-x-4 mt-12" id="courseAttachments">
                             @if ( $notes->attachments && count($notes->attachments) > 0)
                                 @foreach( $notes->attachments as $k => $attachment)
                                     <li class="h-10 flex flex-row items-center justify-between">
@@ -229,9 +235,37 @@
                 console.log(data);
                 displayRanking(data.ranking);
             });
+
         });
 
         const canvas = document.getElementById('chatWindow');
+
+        function getCourse( courseId )
+        {
+            const cTitle = $('#courseTitle');
+            const cDesc = $('#courseDescription');
+            const cNotes = $('#courseNote ');
+            const cAttachments = $('#courseAttachments');
+
+            $.ajax({
+                url: `/lessons/${courseId}`,
+                method:'get',
+                success: function(resp)
+                {
+                    if (resp.success === true)
+                    {
+                        cTitle.html( resp.title );
+                        cDesc.html( resp.description );
+                        cNotes.html( resp.notes );
+                        displayAttachments( resp.attachments );
+                    }
+                },
+                error: function(e)
+                {
+                    console.log(e.message);
+                }
+            });
+        }
 
         function displayRanking( data)
         {
@@ -244,6 +278,19 @@
                             </tr>`
             });
             $('#ranking').html(content);
+        }
+
+        function displayRanking( data)
+        {
+            let content = '';
+            $.each(data, function(idx, ranking){
+                content += `<tr>
+                                <td class="px-6 py-4 whitespace-nowrap" ><p> ${ idx + 1 } </p></td>
+                                <td class="px-6 py-4 whitespace-nowrap" ><p> ${ ranking.name } </p></td>
+                                <td class="px-6 py-4 whitespace-nowrap" > ${ranking.point}</td>
+                            </tr>`
+            });
+            $('#courseAttachments').html(content);
         }
 
         function appendMessage(message, senderId) {

@@ -96,9 +96,8 @@
                                     @else
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap" colspan="3">
-                                                <p class="text-red-300 text-center"> You have no classroom at the moment please
-                                                    <a href="{{route('classroom.index')}}">Click here to enroll for a class</a>
-                                                </p>
+                                                <p class="text-red-300 text-center"> You have no classroom at the moment please</p>
+                                                <p class="text-red-300 text-center"><x-jet-link-button href="{{route('classrooms.find')}}">Click here to enroll for a class</x-jet-link-button></p>
                                             </td>
                                         </tr>
                                     @endif

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classroom;
+use App\Models\ClassroomStudent;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,9 +44,12 @@ class DashboardController extends Controller
         $teacher = Auth::user();
         $classroom_count = Classroom::where('owner_id', $teacher->id)->count();
 
-        $student_count = User::whereHas('classroom_students', function ($q) use ($teacher){
-            $q->where('owner_id', $teacher->id);
-        })->count();
+//        $student_count = User::whereHas('classroom_students', function ($q) use ($teacher){
+//            $q->where('owner_id', $teacher->id);
+//        })->count();
+
+        $classIds = Classroom::where('owner_id', $teacher->id)->pluck('id');
+        $student_count = ClassroomStudent::whereIn('classroom_id', $classIds)->with('student')->count();
 
         $lesson_count = Lesson::whereHas('classroom', function ($q) use ($teacher){
             $q -> where('owner_id', $teacher->id);
